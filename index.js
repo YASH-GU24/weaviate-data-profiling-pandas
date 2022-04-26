@@ -1,21 +1,19 @@
 const express =  require('express')
 const app = express()
 const path = require('path')
-const weaviate = require("weaviate-client");
 const bodyParser = require('body-parser');
 const {PythonShell} = require('python-shell')
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'views')));
 app.engine('html', require('ejs').renderFile);
 let initial_path = path.join(__dirname, "views");
-const client = weaviate.client({
-    scheme: 'http',
-    host: 'localhost:8080',
-    headers: {authorization: 'Bearer <put your token here>'}
-  });
+
+// Displaying login page
 app.get('/', (req, res) => {
     res.render(path.join(initial_path, "login_page.ejs"),{message:""});
 })
+
+
 app.post('/login', (req, res) => {
     let username = req.body['username'];
     let password = req.body['password'];
@@ -24,6 +22,7 @@ app.post('/login', (req, res) => {
         args: [username,password,url]
     }
     console.log(options)
+    //running python script to generate report
     PythonShell.run('python_scripts/script.py', options, function (err, results) {
         if (err) {
             res.render(path.join(initial_path, "login_page.ejs"),{message:"Invalid URL , Please enter a valid URL"});
@@ -39,4 +38,4 @@ app.post('/login', (req, res) => {
         }
       });
 })
-app.listen(process.env.PORT || 3000)
+app.listen(process.env.PORT || 4000)

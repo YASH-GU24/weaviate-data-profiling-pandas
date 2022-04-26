@@ -6,6 +6,8 @@ import time
 import pandas as pd
 import pandas_profiling as pp
 
+
+#PRE PROCESSING FUNCTION TO CREATE PANDAS DATAFRAME AND THEN GENERATE PROFILE
 def get_columns():
   obj =client.schema.get()
   column_names=[]
@@ -48,8 +50,8 @@ def generate_profile():
   profile.to_file("/home/yash/Documents/weaviate-data-profiling/views/output.html")
 
 
+#SETTING UP CLIENT
 my_credentials = weaviate.auth.AuthClientPassword(username=sys.argv[1], password=sys.argv[2])
-# my_credentials = weaviate.auth.AuthClientPassword(username=input(), password=input())
 print(my_credentials)
 try:
   my_wcs = WCS(my_credentials)
@@ -59,14 +61,11 @@ except:
 
 
 cluster_url=sys.argv[3]
-# cluster_url=input()
 try:
   client = weaviate.Client(cluster_url,my_credentials)
 except:
     print("INVALID URL!!!!!!!!")
     exit()
-# while(client.is_ready()!= True):
-#     time.sleep(1)
 
 if(client.is_ready()== True):
     print("Client is Ready!")
